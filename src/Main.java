@@ -1,5 +1,8 @@
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        ReadFromFile readFromFile = new ReadFromFile();
+        readFromFile.readFromFile();
+
+//        System.out.println("Hello world!");
     }
 }
