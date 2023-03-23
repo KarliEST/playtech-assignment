@@ -1,6 +1,10 @@
 public class AnalyzeData {
 
-    ReadFromFile read = new ReadFromFile();
+    public void analyze() {
+        ReadFromFile read = new ReadFromFile();
+        Deck deck = new Deck();
+
+    }
 
 
 }
