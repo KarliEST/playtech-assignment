@@ -1,7 +1,8 @@
 ### IntelliJ IDEA ###
 out/
 !**/src/main/**/out/
-!**/src/test/**/out/
+!**/src/testDTO/**/out/
+.idea
 
 ### Eclipse ###
 .apt_generated
@@ -13,7 +14,7 @@ out/
 .sts4-cache
 bin/
 !**/src/main/**/bin/
-!**/src/test/**/bin/
+!**/src/testDTO/**/bin/
 
 ### NetBeans ###
 /nbproject/private/
@@ -27,3 +28,4 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+/resources/
