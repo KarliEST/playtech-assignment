@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class Main {
@@ -21,12 +19,7 @@ public class Main {
         }
 
         // Sorteerimine timestamp järgi.
-        Collections.sort(allData, new Comparator<TestDTO>() {
-            @Override
-            public int compare(TestDTO t0, TestDTO t1) {
-                return t0.getTimestamp()- t1.getTimestamp();
-            }
-        });
+        allData.sort((t0, t1) -> t0.getTimestamp() - t1.getTimestamp());
 
         // Prindi sorteeritud väljad.
         System.out.println("Prindib kõik väljad timestamp-i järgi sorteeritult");
@@ -36,7 +29,7 @@ public class Main {
         }
 
         // Prindi sessionId väljad.
-        System.out.println("Prindib väljad sessionId-ga: "+sessionId);
+        System.out.println("Prindib väljad sessionId-ga: " + sessionId);
         for (var line : allData
         ) {
             if (line.getSessionId().equals(sessionId)) {
