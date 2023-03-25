@@ -5,6 +5,7 @@ public class Main {
     public static void main(String[] args) {
         ReadFromFile readFromFile = new ReadFromFile();
         WriteToFile writeToFile = new WriteToFile();
+        DataAnalyzer dataAnalyzer = new DataAnalyzer();
         String inputFile = "game_data_1.txt";
         String outputFile = "analyzer_output.txt";
         List<DataObject> dataObjects;
@@ -12,8 +13,14 @@ public class Main {
 
         // Sorteerimine timestampi järgi.
         dataObjects.sort(Comparator.comparingInt(DataObject::getTimestamp));
-        dataObjects.forEach(System.out::println);
-        writeToFile.writeToFile(dataObjects,outputFile);
+        dataAnalyzer.checkStuff("D HIT", "KH-8D", "9D-4D-7H");
+//        for (DataObject item :
+//                dataObjects) {
+//            dataAnalyzer.checkStuff(item.getAction(), item.getDealersHand(),item.getPlayersHand());
+//        }
+//        dataObjects.forEach(System.out::println);
+//        TODO: kommenteeri write to file tagasi
+//        writeToFile.writeToFile(dataObjects,outputFile);
 
 
 
