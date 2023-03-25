@@ -1,7 +1,7 @@
 ### IntelliJ IDEA ###
 out/
 !**/src/main/**/out/
-!**/src/testDTO/**/out/
+!**/src/dataObject/**/out/
 .idea
 
 ### Eclipse ###
@@ -14,7 +14,7 @@ out/
 .sts4-cache
 bin/
 !**/src/main/**/bin/
-!**/src/testDTO/**/bin/
+!**/src/dataObject/**/bin/
 
 ### NetBeans ###
 /nbproject/private/

@@ -7,19 +7,18 @@ import java.util.Scanner;
 
 public class ReadFromFile {
 
-    public List readFromFile() {
+    public List readFromFile(String fileName) {
 
         var array = new ArrayList<>();
-
+        String filePath = "./resources/";
         try {
-            File myObj = new File("./resources/game_data_1.txt");
-            Scanner myReader = new Scanner(myObj);
+            File dataFile = new File(filePath+fileName);
+            Scanner myReader = new Scanner(dataFile);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
                 List<String> line = Arrays.asList(data.split("\\s*,\\s*"));
-//                ArrayList sessionLine = new ArrayList<>();
                 if (line.size() == 6) {
-                    TestDTO testDTO = new TestDTO(
+                    DataObject dataObject = new DataObject(
                             Integer.parseInt(line.get(0)),
                             Integer.parseInt(line.get(1)),
                             Integer.parseInt(line.get(2)),
@@ -27,14 +26,7 @@ public class ReadFromFile {
                             line.get(4).toUpperCase(),
                             line.get(5).toUpperCase()
                     );
-                    array.add(testDTO);
-//                    sessionLine.add(Integer.parseInt(line.get(0)));
-//                    sessionLine.add(Integer.parseInt(line.get(1)));
-//                    sessionLine.add(Integer.parseInt(line.get(2)));
-//                    sessionLine.add(line.get(3).toUpperCase());
-//                    sessionLine.add(line.get(4).toUpperCase());
-//                    sessionLine.add(line.get(5).toUpperCase());
-//                    array.add(sessionLine);
+                    array.add(dataObject);
                 }
             }
             myReader.close();

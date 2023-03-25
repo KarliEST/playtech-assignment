@@ -12,6 +12,7 @@ public class Hand {
         this.type = type;
     }
 
+    // TODO: eemalda ülearused getterid ja setterid
     public Integer getHandValue() {
         return handValue;
     }
