@@ -1,23 +1,15 @@
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class WriteToFile {
-    List<List> array = new ArrayList<>();
-
-    public void writeToFile() {
-
+    public void writeToFile(List<DataObject> array, String fileName) {
         try {
-//            Writer output;
-//            output = new BufferedWriter(new FileWriter("analyzer_output.txt"));
-            FileWriter output = new FileWriter("analyzer_output.txt");
-//            StringBuilder stringBuilder = new StringBuilder();
-            for (List item : array
+            FileWriter output = new FileWriter(fileName);
+            for (var item : array
             ) {
-                output.write(item.toString());
+                output.write(item.toString() + "\n");
             }
-//            myWriter.write(array.toString());
             output.close();
             System.out.println("Successfully wrote to the file.");
         } catch (IOException e) {

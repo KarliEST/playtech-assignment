@@ -1,4 +1,4 @@
-public class TestDTO {
+public class DataObject {
     private Integer timestamp;
     private Integer sessionId;
     private Integer playerId;
@@ -6,10 +6,10 @@ public class TestDTO {
     private String dealersHand;
     private String playersHand;
 
-    public TestDTO() {
+    public DataObject() {
     }
 
-    public TestDTO(Integer timestamp, Integer sessionId, Integer playerId, String action, String dealersHand, String playersHand) {
+    public DataObject(Integer timestamp, Integer sessionId, Integer playerId, String action, String dealersHand, String playersHand) {
         this.timestamp = timestamp;
         this.sessionId = sessionId;
         this.playerId = playerId;
@@ -20,16 +20,10 @@ public class TestDTO {
 
     @Override
     public String toString() {
-        return "Test{" +
-                "timestamp=" + timestamp +
-                ", sessionId=" + sessionId +
-                ", playerId=" + playerId +
-                ", action='" + action + '\'' +
-                ", dealersHand='" + dealersHand + '\'' +
-                ", playersHand='" + playersHand + '\'' +
-                '}';
+        return timestamp + "," + sessionId + "," + playerId + "," + action + "," + dealersHand + "," + playersHand;
     }
 
+    // TODO: kustuta ülearused getterid ja setterid
     public Integer getTimestamp() {
         return timestamp;
     }
