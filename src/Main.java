@@ -7,7 +7,7 @@ public class Main {
         ReadFromFile readFromFile = new ReadFromFile();
         WriteToFile writeToFile = new WriteToFile();
         DataAnalyzer dataAnalyzer = new DataAnalyzer();
-        String inputFile = "game_data_1.txt";
+        String inputFile = "game_data_2.txt";
         String outputFile = "analyzer_output.txt";
         List<DataObject> dataObjects;
         dataObjects = readFromFile.readFromFile(inputFile);
