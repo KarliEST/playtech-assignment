@@ -1,16 +1,40 @@
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class DataAnalyzer {
 
-    public Boolean checkStuff(String status, String dealerHand, String playerHand) {
-        switch (status) {
+    public void analyzeData(String inputFile,String outputFile) {
+        ReadFromFile readFromFile = new ReadFromFile();
+        WriteToFile writeToFile = new WriteToFile();
+        List<DataObject> inputData = readFromFile.readFromFile(inputFile);
+        List<DataObject> errorsList = new ArrayList<>();
+        List<DataObject> trimmedList = new ArrayList<>();
+        int sessionId = 0;
+        inputData.sort(Comparator.comparingInt(DataObject::getTimestamp)); // Sorting input data by timestamp.
+        for (DataObject item : inputData) {
+            if (checkActionConditions(
+                    item.getAction().toUpperCase(),
+                    item.getDealersHand().toUpperCase(),
+                    item.getPlayersHand().toUpperCase()
+            )) {
+                errorsList.add(item);
+            }
+        }
+        errorsList.sort(Comparator.comparingInt(DataObject::getSessionId));
+        for (DataObject item : errorsList) {
+            if (!item.getSessionId().equals(sessionId)) {
+                sessionId = item.getSessionId();
+                trimmedList.add(item);
+            }
+        }
+        writeToFile.writeToFile(trimmedList,outputFile);
+    }
+
+    private boolean checkActionConditions(String action, String dealerHand, String playerHand) {
+        switch (action) {
             case "P JOINED", "D REDEAL" -> {
                 if (
-                        !checkCardCount(dealerHand, playerHand, status)
+                        !checkCardCount(dealerHand, playerHand, action)
                                 || !areHandsValid(dealerHand, playerHand)
                 ) {
                     return true;
@@ -78,8 +102,8 @@ public class DataAnalyzer {
         return false;
     }
 
-    // If hand contains error result = false.
-    public boolean areHandsValid(String dealerHand, String playerHand) {
+    // If hand contains error return false.
+    private boolean areHandsValid(String dealerHand, String playerHand) {
         String[] dHand = getHandArray(dealerHand);
         String[] pHand = getHandArray(playerHand);
         String[] joinedHands = Stream.concat(Arrays.stream(dHand), Arrays.stream(pHand)).toArray(String[]::new);
@@ -102,7 +126,7 @@ public class DataAnalyzer {
     }
 
     // If player winning are conditions true, return true.
-    public boolean doesPlayerWin(String dealerHand, String playerHand) {
+    private boolean doesPlayerWin(String dealerHand, String playerHand) {
         if (getHandValue(dealerHand) > 21) {
             return true;
         } else if (getHandValue(playerHand) <= 21
@@ -113,7 +137,7 @@ public class DataAnalyzer {
     }
 
     // If player losing are conditions true, return true.
-    public boolean doesPlayerLose(String dealerHand, String playerHand) {
+    private boolean doesPlayerLose(String dealerHand, String playerHand) {
         if (getHandValue(playerHand) > 21) {
             return true;
         } else if (getHandValue(dealerHand) <= 21
@@ -123,32 +147,30 @@ public class DataAnalyzer {
         } else return false;
     }
 
-    // If player hand is equal or above 21 then result = false.
-    public boolean canPlayerHit(String dealersHand, String playersHand) {
-        boolean result = true;
+    // If player hand is equal or above 21 then return false.
+    private boolean canPlayerHit(String dealersHand, String playersHand) {
         if (getHandValue(playersHand) >= 21 || !Arrays.asList(getHandArray(dealersHand)).contains("?")) {
-            result = false;
+            return false;
         }
-        return result;
+        return true;
     }
 
-    // If number of cards in hand is not 2 at joining, then result = false.
-    public boolean checkCardCount(String dealersHand, String playersHand, String status) {
+    // If number of cards in hand is not 2 at joining, then return false.
+    private boolean checkCardCount(String dealersHand, String playersHand, String action) {
         String[] dhand = getHandArray(dealersHand);
         String[] phand = getHandArray(playersHand);
-        boolean result = true;
-        if (Objects.equals(status, "P JOINED") && dhand.length != 2
-                || Objects.equals(status, "P JOINED") && phand.length != 2
+        if (Objects.equals(action, "P JOINED") && dhand.length != 2
+                || Objects.equals(action, "P JOINED") && phand.length != 2
         ) {
-            result = false;
+            return false;
         }
-        return result;
+        return true;
     }
 
-
-    public Integer getHandValue(String hand) {
-        int value = 0;
+    // Get hand value.
+    private Integer getHandValue(String hand) {
         Deck deck = new Deck();
+        int value = 0;
         for (String card : getHandArray(hand)
         ) {
             value += deck.getCardValue(card);

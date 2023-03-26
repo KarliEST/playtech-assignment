@@ -16,15 +16,15 @@ public class ReadFromFile {
             Scanner myReader = new Scanner(dataFile);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
-                List<String> line = Arrays.asList(data.split("\\s*,\\s*"));
+                List<String> line = Arrays.asList(data.split(","));
                 if (line.size() == 6) {
                     DataObject dataObject = new DataObject(
                             Integer.parseInt(line.get(0)),
                             Integer.parseInt(line.get(1)),
                             Integer.parseInt(line.get(2)),
-                            line.get(3).toUpperCase(),
-                            line.get(4).toUpperCase(),
-                            line.get(5).toUpperCase()
+                            line.get(3),
+                            line.get(4),
+                            line.get(5)
                     );
                     array.add(dataObject);
                 }

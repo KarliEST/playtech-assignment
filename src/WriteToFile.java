@@ -11,7 +11,6 @@ public class WriteToFile {
                 output.write(item.toString() + "\n");
             }
             output.close();
-            System.out.println("Successfully wrote to the file.");
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
