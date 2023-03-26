@@ -7,9 +7,9 @@ import java.util.Scanner;
 
 public class ReadFromFile {
 
-    public List readFromFile(String fileName) {
+    public List<DataObject> readFromFile(String fileName) {
 
-        var array = new ArrayList<>();
+        List<DataObject> array = new ArrayList<>();
         String filePath = "./resources/";
         try {
             File dataFile = new File(filePath+fileName);
