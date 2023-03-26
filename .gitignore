@@ -2,7 +2,6 @@
 out/
 !**/src/main/**/out/
 !**/src/dataObject/**/out/
-.idea
 
 ### Eclipse ###
 .apt_generated
@@ -29,3 +28,4 @@ bin/
 ### Mac OS ###
 .DS_Store
 /resources/
+/.idea/
