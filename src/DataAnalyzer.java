@@ -1,90 +1,73 @@
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Stream;
 
 public class DataAnalyzer {
 
     public Boolean checkStuff(String status, String dealerHand, String playerHand) {
         boolean result = false;
         switch (status) {
-            case "P JOINED" -> {
+            case "P JOINED", "D REDEAL" -> {
                 if (
-                        checkCardError(playerHand)
-                                || checkCardError(dealerHand)
-                                || checkJoinedCardCount(dealerHand, playerHand, status)
+                        !checkCardCount(dealerHand, playerHand, status)
+                                || !areHandsValid(dealerHand, playerHand)
                 ) {
                     result = true;
                 }
             }
             case "P HIT" -> {
                 if (
-                        checkCardError(dealerHand)
-                                || checkCardError(playerHand)
-                                || getHandValue(playerHand) >= 21
+                        !areHandsValid(dealerHand, playerHand)
+                                || !canPlayerHit(dealerHand, playerHand)
                 ) {
                     result = true;
                 }
             }
             case "D HIT" -> {
                 if (
-                        checkCardError(dealerHand)
-                                || checkCardError(playerHand)
-                                || canDealerHit(dealerHand)
+                        !areHandsValid(dealerHand, playerHand)
+                                || !(getHandValue(dealerHand) <= 17)
                 ) {
                     result = true;
                 }
             }
             case "P STAND" -> {
                 if (
-                        checkCardError(dealerHand)
-                                || checkCardError(playerHand)
+                        !areHandsValid(dealerHand, playerHand)
                 ) {
                     result = true;
                 }
             }
             case "D STAND" -> {
                 if (
-                        checkCardError(dealerHand)
-                                || checkCardError(playerHand)
-                                || getHandValue(dealerHand) > 17
+                        !areHandsValid(dealerHand, playerHand)
+                                || !(getHandValue(dealerHand) > 17)
                 ) {
                     result = true;
                 }
             }
             case "P WIN" -> {
                 if (
-                        checkCardError(dealerHand)
-                                || checkCardError(playerHand)
-                                || getHandValue(playerHand) > 21
-                                || getHandValue(playerHand) < getHandValue(dealerHand) && getHandValue(dealerHand) <= 21
-                ) {
-                    result = true;
-                }
-            }
-            case "D WIN" -> {
-                if (
-                        checkCardError(dealerHand)
-                                || checkCardError(playerHand)
-                                || getHandValue(dealerHand) > 21
-                                || getHandValue(dealerHand) <= getHandValue(playerHand) && getHandValue(playerHand) <= 21
+                        !areHandsValid(dealerHand, playerHand)
+                                || !doesPlayerWin(dealerHand, playerHand)
                 ) {
                     result = true;
                 }
             }
             case "P LOSE" -> {
                 if (
-                        checkCardError(dealerHand)
-                                || checkCardError(playerHand)
-                                || getHandValue(dealerHand) < getHandValue(playerHand) && getHandValue(playerHand) <= 21
+                        !areHandsValid(dealerHand, playerHand)
+                                || !doesPlayerLose(dealerHand, playerHand)
                 ) {
                     result = true;
                 }
             }
-            case "D LOSE" -> {
+            case "D SHOW" -> {
                 if (
-                        checkCardError(dealerHand)
-                                || checkCardError(playerHand)
-                                || getHandValue(dealerHand) <= 21
-                                || getHandValue(playerHand) >= getHandValue(dealerHand) && getHandValue(playerHand) > 21
+                        !areHandsValid(dealerHand, playerHand)
+                                || !Arrays.asList(getHandArray(dealerHand)).contains("?")
                 ) {
                     result = true;
                 }
@@ -94,77 +77,113 @@ public class DataAnalyzer {
         return result;
     }
 
+    // If hand contains error result = false.
+    public boolean areHandsValid(String dealerHand, String playerHand) {
+        boolean result = true;
+        String[] dHand = getHandArray(dealerHand);
+        String[] pHand = getHandArray(playerHand);
+        String[] joinedHands = Stream.concat(Arrays.stream(dHand), Arrays.stream(pHand)).toArray(String[]::new);
+        // Check if cards in hands are valid
+        if (!validateCards(dHand) || !validateCards(pHand)) {
+            result = false;
+        }
+        // Check if there are repetitive cards in hands
+        Set<String> set = new HashSet<>();
+        for (String item : joinedHands) {
+            if (!set.add(item)) {
+                result = false;
+                break;
+            }
+        }
+        // Check hand values
+        if (getHandValue(dealerHand) == 0 || getHandValue(playerHand) < 4) {
+            result = false;
+        }
+        return result;
+    }
+
+    // If player winning are conditions true, return true.
+    public boolean doesPlayerWin(String dealerHand, String playerHand) {
+        if (getHandValue(dealerHand) > 21) {
+            return true;
+        } else if (getHandValue(playerHand) <= 21
+                && getHandValue(dealerHand) >= 17
+                && getHandValue(playerHand) > getHandValue(dealerHand)) {
+            return true;
+        } else return false;
+    }
+
+    // If player losing are conditions true, return true.
+    public boolean doesPlayerLose(String dealerHand, String playerHand) {
+        if (getHandValue(playerHand) > 21) {
+            return true;
+        } else if (getHandValue(dealerHand) <= 21
+                && getHandValue(dealerHand) >= 17
+                && getHandValue(dealerHand) > getHandValue(playerHand)) {
+            return true;
+        } else return false;
+    }
 
     // If dealers hand is equal or above 17 then result = false.
-    public Boolean canDealerHit(String dealersHand) {
+    public boolean canDealerHit(String dealersHand) {
         boolean result = true;
-        if (getHandValue(dealersHand) >= 17 || Arrays.asList(getHandArray(dealersHand)).contains("?")) {
+//        if (getHandValue(dealersHand) >= 17 || Arrays.asList(getHandArray(dealersHand)).contains("?")) {
+        if (getHandValue(dealersHand) >= 17) {
             result = false;
-            // TODO: kustuta testimise sout
-            System.out.println("Dealer hand value: " + getHandValue(dealersHand));
         }
-        // TODO: kustuta testimise sout
-        System.out.println("Hand: " + Arrays.toString(getHandArray(dealersHand)));
-        System.out.println("Can dealer hit? " + result);
         return result;
     }
 
-    // If number of cards in hand is not 2 at joining, then result = true.
-    public Boolean checkJoinedCardCount(String dealersHand, String playersHand, String status) {
-        String[] dhand = getHandArray(dealersHand);
-        String[] phand = getHandArray(playersHand);
-        boolean result = false;
-        // TODO: kustuta testimisel kasutatud soutid
-//        System.out.println("dealers hand: " + Arrays.toString(dhand));
-//        System.out.println("players hand: " + Arrays.toString(phand));
-        if (Objects.equals(status, "P Joined") && dhand.length != 2 ||
-                Objects.equals(status, "P Joined") && phand.length != 2) {
-            result = true;
-            // TODO: kustuta testimise sout
-//            System.out.println("Error in starting, card count is false at joining!!");
+    // If player hand is equal or above 21 then result = false.
+    public boolean canPlayerHit(String dealersHand, String playersHand) {
+        boolean result = true;
+        if (getHandValue(playersHand) >= 21 || !Arrays.asList(getHandArray(dealersHand)).contains("?")) {
+            result = false;
         }
         return result;
     }
+
+    // If number of cards in hand is not 2 at joining, then result = false.
+    public boolean checkCardCount(String dealersHand, String playersHand, String status) {
+        String[] dhand = getHandArray(dealersHand);
+        String[] phand = getHandArray(playersHand);
+        boolean result = true;
+        if (Objects.equals(status, "P JOINED") && dhand.length != 2
+                || Objects.equals(status, "P JOINED") && phand.length != 2
+        ) {
+            result = false;
+        }
+        return result;
+    }
+
 
     public Integer getHandValue(String hand) {
         int value = 0;
         Deck deck = new Deck();
-        // TODO: kustuta sout
-//        System.out.println("Hand: " + hand);
         for (String card : getHandArray(hand)
         ) {
             value += deck.getCardValue(card);
         }
-        // TODO: kustuta sout
-//        System.out.println("Hand value: " + value);
         return value;
-    }
-
-    // If hand contains card error result = true.
-    public Boolean checkCardError(String hand) {
-        Deck deck = new Deck();
-        String[] validCards = deck.getCardDeck();
-        // TODO: kustuta sout
-        System.out.println("Hand: " + hand);
-        boolean result = false;
-        for (String card : getHandArray(hand)) {
-            if (!Arrays.asList(validCards).contains(card)) {
-                result = true;
-                break;
-            }
-        }
-        // TODO: kustuta testimise sout
-        if (result) {
-            System.out.println("Hand contains card error!!");
-        }
-        return result;
     }
 
     // Convert hand into array.
     private String[] getHandArray(String hand) {
-        String[] handArr = hand.split("-");
-        return handArr;
+        return hand.split("-");
     }
 
+    // Check if cards in hand are valid. If not valid return false.
+    private boolean validateCards(String[] hand) {
+        Deck deck = new Deck();
+        boolean result = true;
+        String[] validCards = deck.getCardDeck();
+        for (String card : hand) {
+            if (!Arrays.asList(validCards).contains(card)) {
+                result = false;
+                break;
+            }
+        }
+        return result;
+    }
 
 }

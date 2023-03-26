@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -13,15 +14,32 @@ public class Main {
 
         // Sorteerimine timestampi järgi.
         dataObjects.sort(Comparator.comparingInt(DataObject::getTimestamp));
-        dataAnalyzer.checkStuff("D HIT", "KH-8D", "9D-4D-7H");
-//        for (DataObject item :
-//                dataObjects) {
-//            dataAnalyzer.checkStuff(item.getAction(), item.getDealersHand(),item.getPlayersHand());
-//        }
-//        dataObjects.forEach(System.out::println);
+//        System.out.println(dataAnalyzer.checkStuff("P LOSE", "KH-KH", "2D-2H-KH-2C-3D"));
+        List<DataObject> errorsList = new ArrayList<>();
+        for (DataObject item :
+                dataObjects) {
+            if (dataAnalyzer.checkStuff(item.getAction(), item.getDealersHand(), item.getPlayersHand())) {
+                errorsList.add(item);
+            }
+        }
+        errorsList.sort(Comparator.comparingInt(DataObject::getSessionId));
+        errorsList.forEach(System.out::println);
+
+        List<DataObject> trimmedList = new ArrayList<>();
+        int sessionId = 0;
+        for (DataObject item :
+                errorsList) {
+            if (!item.getSessionId().equals(sessionId)) {
+                sessionId = item.getSessionId();
+                trimmedList.add(item);
+            }
+        }
+        System.out.println("---------------------");
+        trimmedList.forEach(System.out::println);
+
+
 //        TODO: kommenteeri write to file tagasi
 //        writeToFile.writeToFile(dataObjects,outputFile);
-
 
 
 //        AnalyzeData analyzeData = new AnalyzeData();
